@@ -14,3 +14,42 @@ function roll() {
     document.getElementById("dice").innerHTML = num1+","+num2;
 
 }
+
+class point {
+  chekerAmount;
+  chekerColor;
+
+  constructor(chekerAmount, chekerColor) {
+    this.chekerAmount = chekerAmount;
+    this.chekerColor = chekerColor;
+  }
+
+  constructor(point) {
+    this.chekerAmount = point.chekerAmount;
+    this.chekerColor = point.chekerColor;
+  }
+
+  setChekerAmount(chekerAmount) {
+    this.chekerAmount = chekerAmount;
+  }
+
+  getChekerAmount() {
+    return this.chekerAmount;
+  }
+
+  setChekerColor(chekerColor) {
+    this.chekerColor = chekerColor;
+  }
+
+  getChekerColor() {
+    return this.chekerColor;
+  }
+
+  add() {
+    this.chekerAmount++;
+  }
+
+  remove() {
+    this.chekerAmount--;
+  }
+}
