@@ -60,6 +60,21 @@ class board {
 
   constructor() {
     this.turn = 0;
-    this.points = new array [20];
+    this.points = new array (20);
+    for (i = 0; i < 20; i++) {
+      this.points[i] = new Point (0 , "none");
+    }
+  }
+
+  nextTurn() {
+    this.turn++:
+  }
+
+  getTurn() {
+    return this.turn;
+  }
+
+  getPoints() {
+    return this.points;
   }
 }
