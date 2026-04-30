@@ -53,3 +53,13 @@ class point {
     this.chekerAmount--;
   }
 }
+
+class board {
+  turn;
+  points;
+
+  constructor() {
+    this.turn = 0;
+    this.points = new array [20];
+  }
+}
