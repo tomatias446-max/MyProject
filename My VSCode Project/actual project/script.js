@@ -1,6 +1,7 @@
 let turn = 0;
 let num1;
 let num2;
+alert("JS is working!"); 
 
 function random(min, max) {
   min = Math.ceil(min);
@@ -22,11 +23,6 @@ class point {
   constructor(chekerAmount, chekerColor) {
     this.chekerAmount = chekerAmount;
     this.chekerColor = chekerColor;
-  }
-
-  constructor(point) {
-    this.chekerAmount = point.chekerAmount;
-    this.chekerColor = point.chekerColor;
   }
 
   setChekerAmount(chekerAmount) {
@@ -67,7 +63,7 @@ class board {
   }
 
   nextTurn() {
-    this.turn++:
+    this.turn++;
   }
 
   getTurn() {
@@ -77,4 +73,14 @@ class board {
   getPoints() {
     return this.points;
   }
+
+  addChecker(i) {
+    this.points[i].add();
+  }
+
+  removeChecker(i) {
+    this.points[i].remove();
+  }
+
+  c
 }
