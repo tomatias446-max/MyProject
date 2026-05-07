@@ -1,7 +1,54 @@
 let turn = 0;
 let num1;
 let num2;
-alert("JS is working!"); 
+let board = new Board();
+
+function start() {
+  for (let i = 0; i < 24; i++) {
+    switch (i) {
+      case 0:
+       board.points[i].setChekerAmount(2);
+       board.points[i].setChekerColor("black");
+       alert(i);
+       break;
+     case 5:
+       board.points[i].setChekerAmount(5);
+       board.points[i].setChekerColor("white");
+       alert(i);
+       break;
+     case 7:
+       board.points[i].setChekerAmount(3);
+       board.points[i].setChekerColor("white");
+       alert(i);
+       break;
+      case 11:
+       board.points[i].setChekerAmount(5);
+       board.points[i].setChekerColor("black");
+       alert(i);
+       break;
+     case 12:
+       board.points[i].setChekerAmount(5);
+       board.points[i].setChekerColor("white");
+       alert(i);
+       break;
+     case 16:
+       board.points[i].setChekerAmount(3);
+       board.points[i].setChekerColor("black");
+       alert(i);
+       break;
+     case 18:
+       board.points[i].setChekerAmount(5);
+        board.points[i].setChekerColor("black");
+        break;
+      case 23:
+       board.points[i].setChekerAmount(2);
+       board.points[i].setChekerColor("white");
+       break;
+      default: 
+  }
+  turn+=2;
+}
+}
 
 function random(min, max) {
   min = Math.ceil(min);
@@ -12,11 +59,22 @@ function random(min, max) {
 function roll() {
     num1 = random(1,6);
     num2 = random(1,6);
+    if (turn == 0){
+      start();
+    }
     document.getElementById("dice").innerHTML = num1+","+num2;
-
 }
 
-class point {
+function updateTurn() {
+  if (turn%2 == 0) {
+   document.getElementById("turnDisplay").innerHTML = "It's white's turn";
+  }
+  else {
+    document.getElementById("turnDisplay").innerHTML = "It's black's turn";
+  }
+}
+
+class Point {
   chekerAmount;
   chekerColor;
 
@@ -50,14 +108,14 @@ class point {
   }
 }
 
-class board {
+class Board {
   turn;
   points;
 
   constructor() {
     this.turn = 0;
-    this.points = new array (20);
-    for (i = 0; i < 20; i++) {
+    this.points = new array (24);
+    for (i = 0; i < 24; i++) {
       this.points[i] = new Point (0 , "none");
     }
   }
@@ -82,5 +140,12 @@ class board {
     this.points[i].remove();
   }
 
-  c
+  canMoveTo(i) {
+    if (this.points[i].getChekerColor == "black") {
+      
+    }
+    if (this.points[i].getChekerColor == "white") {
+
+    }
+  }
 }
