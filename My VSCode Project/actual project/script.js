@@ -1,53 +1,47 @@
 let turn = 0;
 let num1;
 let num2;
-let board = new Board();
+let board;
 
 function start() {
+  board = new Board();
   for (let i = 0; i < 24; i++) {
     switch (i) {
       case 0:
-       board.points[i].setChekerAmount(2);
-       board.points[i].setChekerColor("black");
-       alert(i);
-       break;
-     case 5:
-       board.points[i].setChekerAmount(5);
-       board.points[i].setChekerColor("white");
-       alert(i);
-       break;
-     case 7:
-       board.points[i].setChekerAmount(3);
-       board.points[i].setChekerColor("white");
-       alert(i);
-       break;
+        board.points[i].setChekerAmount(2);
+        board.points[i].setChekerColor("black");
+        break;
+      case 5:
+        board.points[i].setChekerAmount(5);
+        board.points[i].setChekerColor("white");
+        break;
+      case 7:
+        board.points[i].setChekerAmount(3);
+        board.points[i].setChekerColor("white");
+        break;
       case 11:
-       board.points[i].setChekerAmount(5);
-       board.points[i].setChekerColor("black");
-       alert(i);
-       break;
-     case 12:
-       board.points[i].setChekerAmount(5);
-       board.points[i].setChekerColor("white");
-       alert(i);
-       break;
-     case 16:
-       board.points[i].setChekerAmount(3);
-       board.points[i].setChekerColor("black");
-       alert(i);
-       break;
-     case 18:
-       board.points[i].setChekerAmount(5);
+        board.points[i].setChekerAmount(5);
+        board.points[i].setChekerColor("black");
+        break;
+      case 12:
+        board.points[i].setChekerAmount(5);
+        board.points[i].setChekerColor("white");
+        break;
+      case 16:
+        board.points[i].setChekerAmount(3);
+        board.points[i].setChekerColor("black");
+        break;
+      case 18:
+        board.points[i].setChekerAmount(5);
         board.points[i].setChekerColor("black");
         break;
       case 23:
-       board.points[i].setChekerAmount(2);
-       board.points[i].setChekerColor("white");
-       break;
-      default: 
-  }
+        board.points[i].setChekerAmount(2);
+        board.points[i].setChekerColor("white");
+        break;
+    }
   turn+=2;
-}
+  }
 }
 
 function random(min, max) {
@@ -114,8 +108,8 @@ class Board {
 
   constructor() {
     this.turn = 0;
-    this.points = new array (24);
-    for (i = 0; i < 24; i++) {
+    this.points = new Array (24);
+    for (let i = 0; i < 24; i++) {
       this.points[i] = new Point (0 , "none");
     }
   }
