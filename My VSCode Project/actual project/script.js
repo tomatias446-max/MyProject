@@ -136,10 +136,20 @@ class Board {
 
   canMoveTo(i) {
     if (this.points[i].getChekerColor == "black") {
-      
-    }
-    if (this.points[i].getChekerColor == "white") {
+      if (i - num1 >= 0) {
 
+      }
+      if (i - num2 >= 0) {
+
+      }
+    }
+    else if (this.points[i].getChekerColor == "white") {
+      if (i + num1 < 24) {
+
+      }
+      if (i + num2 < 24) {
+        
+      }
     }
   }
 }
