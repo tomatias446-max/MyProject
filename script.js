@@ -40,7 +40,7 @@ function start() {
         board.points[i].setChekerColor("white");
         break;
     }
-  turn+=2;
+  turn+=2;  
   }
 }
 
