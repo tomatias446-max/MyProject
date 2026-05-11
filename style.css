@@ -1,13 +1,193 @@
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 10px;
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.item {
-  background-color: lightblue;
-  padding: 20px;
-  text-align: center;
+/* PAGE */
+body {
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+    radial-gradient(circle at top, #3a3a3a, #151515);
+
+  font-family: Arial, sans-serif;
+}
+
+/* GAME UI */
+.game-ui {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* TOP PANEL */
+.top-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 15px 20px;
+
+  background: #2a2a2a;
+
+  border-radius: 10px;
+
+  color: white;
+
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* TURN + DICE */
+.turn-display,
+.dice-display {
   font-size: 20px;
-  border-radius: 5px;
+  font-weight: bold;
+}
+
+/* BUTTON */
+button {
+  padding: 12px 24px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #d18a2f;
+  color: white;
+
+  font-size: 16px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #e29a3d;
+  transform: translateY(-2px);
+}
+
+/* BOARD */
+.board {
+  width: 1100px;
+  height: 650px;
+
+  display: flex;
+  gap: 18px;
+
+  padding: 18px;
+
+  position: relative;
+
+  background:
+    linear-gradient(
+      145deg,
+      #d2a066,
+      #ba8246
+    );
+
+  border: 16px solid #5a3418;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 20px 45px rgba(0,0,0,0.55);
+}
+
+/* SECTIONS */
+.section {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ROWS */
+.row {
+  flex: 1;
+
+  display: flex;
+}
+
+/* BAR */
+.bar {
+  width: 70px;
+
+  background:
+    linear-gradient(
+      to right,
+      #4a2a14,
+      #6b3d1c,
+      #4a2a14
+    );
+
+  border-radius: 4px;
+}
+
+/* POINT */
+.point {
+  flex: 1;
+  position: relative;
+
+  cursor: pointer;
+}
+
+/* HOVER */
+.point:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* TRIANGLES */
+.top .point::before,
+.bottom .point::before {
+  content: "";
+
+  position: absolute;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 0;
+  height: 0;
+
+  border-left: 38px solid transparent;
+  border-right: 38px solid transparent;
+}
+
+/* TOP */
+.top .point::before {
+  top: 0;
+
+  border-bottom: 290px solid;
+}
+
+/* BOTTOM */
+.bottom .point::before {
+  bottom: 0;
+
+  border-top: 290px solid;
+}
+
+/* COLORS */
+.top .dark::before {
+  border-bottom-color: #7b1e1e;
+}
+
+.top .light::before {
+  border-bottom-color: #f3dfb7;
+}
+
+.bottom .dark::before {
+  border-top-color: #7b1e1e;
+}
+
+.bottom .light::before {
+  border-top-color: #f3dfb7;
 }

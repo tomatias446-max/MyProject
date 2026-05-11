@@ -1,111 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <style>
-        body {
-            background-color: rgb(rgb(255, 248, 157), green, blue);
-            text-align: center;
-        }
-    </style>
-  <title>Simple Grid</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backgammon Board</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <button
-    onclick="roll()";
-    >
-        Roll
-    </button>
-    <p
-    id="dice";
-    style="text-align: center;"
-    >
-    0,0
-    </p>
-    <h2 id="turnDisplay">It's white's turn</h2>
-  <div class="grid-container">
-    <div class="item";><button 
-        onclick="play(this.innerText)";>
-        5
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        3
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        5
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        2
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        5
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        3
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        5
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        0
-    </button></div>
-    <div class="item"><button 
-        onclick="play(this.innerText)">
-        2
-    </button></div>
+
+  <div class="game-ui">
+
+    <!-- TOP PANEL -->
+    <div class="top-panel">
+
+      <div class="turn-display">
+        Turn: White
+      </div>
+
+      <div class="dice-display">
+        Dice: - -
+      </div>
+
+      <button onclick="alert('Clicked')">
+        Roll Dice
+      </button>
+
+    </div>
+
+    <!-- BOARD -->
+    <div class="board">
+
+      <!-- LEFT -->
+      <div class="section">
+
+        <!-- TOP -->
+        <div class="row top">
+
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+
+        </div>
+
+        <!-- BOTTOM -->
+        <div class="row bottom">
+
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+
+        </div>
+
+      </div>
+
+      <!-- CENTER BAR -->
+      <div class="bar" onclick="alert('Clicked')"></div>
+
+      <!-- RIGHT -->
+      <div class="section">
+
+        <!-- TOP -->
+        <div class="row top">
+
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+
+        </div>
+
+        <!-- BOTTOM -->
+        <div class="row bottom">
+
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+          <div class="point light" onclick="alert('Clicked')"></div>
+          <div class="point dark" onclick="alert('Clicked')"></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
-    <script src="script.js"></script>
+
 </body>
-</script>
 </html>
