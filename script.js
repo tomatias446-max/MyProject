@@ -56,7 +56,7 @@ function roll() {
     if (turn == 0){
       start();
     }
-    document.getElementById("dice").innerHTML = num1+","+num2;
+    document.getElementById("dice").innerHTML = "Dice: "+num1+","+num2;
 }
 
 function updateTurn() {

@@ -14,7 +14,7 @@ body {
   align-items: center;
 
   background:
-    radial-gradient(circle at top, #3a3a3a, #151515);
+    radial-gradient(circle at top, #00ff2a, #ff0000);
 
   font-family: Arial, sans-serif;
 }
