@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Backgammon Board</title>
+  <title>Backgammon</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -12,14 +12,14 @@
 
   <div class="game-ui">
 
-    <!-- TOP PANEL -->
+    <!-- TOP UI -->
     <div class="top-panel">
 
-      <div class="turn-display">
+      <div id="turnDisplay" class="turn-display">
         Turn: White
       </div>
 
-      <div class="dice-display" id="dice">
+      <div id="dice" class="dice-display">
         Dice: -,-
       </div>
 
@@ -32,63 +32,51 @@
     <!-- BOARD -->
     <div class="board">
 
-      <!-- LEFT -->
+      <!-- LEFT 12 -->
       <div class="section">
 
-        <!-- TOP -->
         <div class="row top">
-
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-
+          <div class="point dark"></div>
+          <div class="point light"></div>
+          <div class="point dark"></div>
+          <div class="point light"></div>
+          <div class="point dark"></div>
+          <div class="point light"></div>
         </div>
 
-        <!-- BOTTOM -->
         <div class="row bottom">
-
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-
+          <div class="point light"></div>
+          <div class="point dark"></div>
+          <div class="point light"></div>
+          <div class="point dark"></div>
+          <div class="point light"></div>
+          <div class="point dark"></div>
         </div>
 
       </div>
 
-      <!-- CENTER BAR -->
-      <div class="bar" onclick="alert('Clicked')"></div>
+      <!-- BAR -->
+      <div class="bar"></div>
 
-      <!-- RIGHT -->
+      <!-- RIGHT 12 -->
       <div class="section">
 
-        <!-- TOP -->
         <div class="row top">
-
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-
+          <div class="point dark"></div>
+          <div class="point light"></div>
+          <div class="point dark"></div>
+          <div class="point light"></div>
+          <div class="point dark"></div>
+          <div class="point light"></div>
         </div>
 
-        <!-- BOTTOM -->
         <div class="row bottom">
-
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-          <div class="point light" onclick="alert('Clicked')"></div>
-          <div class="point dark" onclick="alert('Clicked')"></div>
-
+          <div class="point light"></div>
+          <div class="point dark"></div>
+          <div class="point light"></div>
+          <div class="point dark"></div>
+          <div class="point light"></div>
+          <div class="point dark"></div>
         </div>
 
       </div>
@@ -96,6 +84,8 @@
     </div>
 
   </div>
+
   <script src="script.js"></script>
+
 </body>
 </html>
