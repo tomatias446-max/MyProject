@@ -1,5 +1,5 @@
 /* =========================
-   RESET
+   RESET & BASE
 ========================= */
 * {
   margin: 0;
@@ -7,9 +7,6 @@
   box-sizing: border-box;
 }
 
-/* =========================
-   PAGE
-========================= */
 body {
   min-height: 100vh;
   display: flex;
@@ -21,6 +18,7 @@ body {
     rgb(255, 0, 0)
   );
   font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
 /* =========================
@@ -32,9 +30,6 @@ body {
   gap: 18px;
 }
 
-/* =========================
-   TOP PANEL
-========================= */
 .top-panel {
   display: flex;
   justify-content: space-between;
@@ -44,27 +39,30 @@ body {
   border-radius: 10px;
   color: white;
   font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* =========================
-   BUTTON
-========================= */
 button {
   padding: 10px 18px;
   border: none;
   border-radius: 8px;
   background: #d18a2f;
+  color: #fff;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.2s;
+  transition: background 0.2s, transform 0.1s;
 }
 
 button:hover {
   background: #e2a24a;
 }
 
+button:active {
+  transform: scale(0.95);
+}
+
 /* =========================
-   BOARD
+   BOARD STRUCTURE
 ========================= */
 .board {
   width: min(1100px, 95vw);
@@ -75,35 +73,112 @@ button:hover {
   background: #c79a62;
   border: 14px solid #5a3418;
   border-radius: 12px;
-  overflow: hidden;
   align-items: stretch;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .section {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
 }
 
 .row {
   flex: 1;
   display: flex;
-  min-height: 0;
-  overflow: hidden;
 }
 
 /* =========================
-   FIXED BAR (THE ONLY MAJOR CHANGE)
+   POINTS & TRIANGLES
+========================= */
+.point {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  cursor: pointer;
+}
+
+.top .point {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.bottom .point {
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+}
+
+.point::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: min(34px, 3.5vw) solid transparent;
+  border-right: min(34px, 3.5vw) solid transparent;
+  z-index: 1;
+}
+
+.top .point::before { top: 0; border-top: 280px solid; }
+.bottom .point::before { bottom: 0; border-bottom: 280px solid; }
+
+.top .dark::before { border-top-color: #7b1e1e; }
+.top .light::before { border-top-color: #f3dfb7; }
+.bottom .dark::before { border-bottom-color: #7b1e1e; }
+.bottom .light::before { border-bottom-color: #f3dfb7; }
+
+/* Valid Move Highlight */
+.point.valid-move::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  opacity: 0.6;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.top .point.valid-move::after {
+  top: 0;
+  border-left: min(34px, 3.5vw) solid transparent;
+  border-right: min(34px, 3.5vw) solid transparent;
+  border-top: 280px solid rgba(255, 230, 0, 0.5);
+}
+
+.bottom .point.valid-move::after {
+  bottom: 0;
+  border-left: min(34px, 3.5vw) solid transparent;
+  border-right: min(34px, 3.5vw) solid transparent;
+  border-bottom: 280px solid rgba(255, 230, 0, 0.5);
+}
+
+/* =========================
+   THE BAR
 ========================= */
 .bar {
   width: 70px;
   background: #3e2411;
   border-radius: 6px;
-  position: relative; /* Allows checkers to be pinned via absolute positioning */
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-  border-left: 2px solid #5a3418;
-  border-right: 2px solid #5a3418;
+  position: relative;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+  border: 2px solid #5a3418;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.bar:hover {
+  background: #4a2c15;
+}
+
+/* Pulse for forced moves */
+.bar.active-turn {
+  box-shadow: inset 0 0 20px #ffe066, 0 0 15px rgba(255, 224, 102, 0.6);
+  border-color: #ffe066;
 }
 
 .bar-stack {
@@ -116,116 +191,47 @@ button:hover {
   width: 100%;
 }
 
-.bar-stack.top {
-  top: 10px;
-}
-
-.bar-stack.bottom {
-  bottom: 10px;
-  flex-direction: column-reverse; /* Stacks white checkers from the bottom up */
-}
-
-/* =========================
-   POINTS
-========================= */
-.point {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 0;
-  max-height: 100%;
-}
-
-.top .point {
-  flex-direction: column;
-  justify-content: flex-start;
-  height: 100%;
-}
-
-.bottom .point {
-  flex-direction: column-reverse;
-  justify-content: flex-start;
-  height: 100%;
-}
-
-/* TRIANGLES */
-.point::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 34px solid transparent;
-  border-right: 34px solid transparent;
-  z-index: 1;
-}
-
-.top .point::before { top: 0; border-top: 300px solid; }
-.bottom .point::before { bottom: 0; border-bottom: 300px solid; }
-
-.top .dark::before { border-top-color: #7b1e1e; }
-.top .light::before { border-top-color: #f3dfb7; }
-.bottom .dark::before { border-bottom-color: #7b1e1e; }
-.bottom .light::before { border-bottom-color: #f3dfb7; }
-
-/* HIGHLIGHTS */
-.point.valid-move::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  opacity: 0.45;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.top .point.valid-move::after {
-  bottom: 0;
-  border-left: 38px solid transparent;
-  border-right: 38px solid transparent;
-  border-top: 300px solid rgba(255, 230, 0, 0.65);
-}
-
-.bottom .point.valid-move::after {
-  top: 0;
-  border-left: 38px solid transparent;
-  border-right: 38px solid transparent;
-  border-bottom: 300px solid rgba(255, 230, 0, 0.65);
-}
+.bar-stack.top { top: 15px; }
+.bar-stack.bottom { bottom: 15px; flex-direction: column-reverse; }
 
 /* =========================
    CHECKERS
 ========================= */
 .checker {
-  width: 52px;
-  height: 52px;
+  width: min(52px, 5vw);
+  height: min(52px, 5vw);
   border-radius: 50%;
   margin: 2px 0;
   flex-shrink: 0;
   position: relative;
   z-index: 5;
   pointer-events: none;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.45), inset 0 2px 3px rgba(255,255,255,0.25);
-  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.2);
 }
 
+/* Specialized stacking in the Bar */
 .bar .checker {
-  width: 46px; /* Slightly smaller to fit nicely in the bar */
-  height: 46px;
-  margin: -10px 0; /* Creates the overlapping stacked look */
+  width: 44px;
+  height: 44px;
+  margin: -15px 0; /* Overlap effect */
+  border-width: 3px;
 }
 
-.checker.white { background: #f2f2f2; border: 2px solid #bdbdbd; }
-.checker.black { background: #1f1f1f; border: 2px solid #000; }
+.checker.white {
+  background: radial-gradient(circle at 30% 30%, #ffffff, #d9d9d9);
+  border: 2px solid #aaa;
+}
 
-/* SELECTED STATE */
+.checker.black {
+  background: radial-gradient(circle at 30% 30%, #444444, #000000);
+  border: 2px solid #000;
+}
+
+/* Selected Highlight */
 .checker.selected {
   outline: 4px solid #ffe066;
-  transform: scale(1.08);
+  outline-offset: 3px;
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: 0 0 20px #ffe066;
 }
