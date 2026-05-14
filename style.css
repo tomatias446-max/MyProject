@@ -12,17 +12,14 @@
 ========================= */
 body {
   min-height: 100vh;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   background: radial-gradient(
-  circle at top center,
-  rgb(41, 255, 41),
-  rgb(255, 0, 0)
-);
-
+    circle at top center,
+    rgb(41, 255, 41),
+    rgb(255, 0, 0)
+  );
   font-family: Arial, sans-serif;
 }
 
@@ -42,12 +39,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 14px 18px;
-
   background: #2d0047;
   border-radius: 10px;
-
   color: white;
   font-weight: bold;
 }
@@ -57,15 +51,11 @@ body {
 ========================= */
 button {
   padding: 10px 18px;
-
   border: none;
   border-radius: 8px;
-
   background: #d18a2f;
-
   font-weight: bold;
   cursor: pointer;
-
   transition: 0.2s;
 }
 
@@ -79,46 +69,60 @@ button:hover {
 .board {
   width: min(1100px, 95vw);
   aspect-ratio: 11 / 6.5;
-
   display: flex;
   gap: 16px;
-
   padding: 16px;
-
   background: #c79a62;
-
   border: 14px solid #5a3418;
   border-radius: 12px;
+  overflow: hidden;
+  align-items: stretch;
 }
 
-/* =========================
-   SECTIONS
-========================= */
 .section {
   flex: 1;
-
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
-/* =========================
-   ROWS
-========================= */
 .row {
   flex: 1;
-
   display: flex;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* =========================
-   BAR
+   FIXED BAR (THE ONLY MAJOR CHANGE)
 ========================= */
 .bar {
   width: 70px;
-
   background: #3e2411;
-
   border-radius: 6px;
+  position: relative; /* Allows checkers to be pinned via absolute positioning */
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  border-left: 2px solid #5a3418;
+  border-right: 2px solid #5a3418;
+}
+
+.bar-stack {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.bar-stack.top {
+  top: 10px;
+}
+
+.bar-stack.bottom {
+  bottom: 10px;
+  flex-direction: column-reverse; /* Stacks white checkers from the bottom up */
 }
 
 /* =========================
@@ -126,84 +130,73 @@ button:hover {
 ========================= */
 .point {
   flex: 1;
-
-  cursor: pointer;
-
   position: relative;
-
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 0;
+  max-height: 100%;
 }
 
-/* TOP ROW -> STACK DOWNWARD */
 .top .point {
-  display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
 }
 
-/* BOTTOM ROW -> STACK UPWARD */
 .bottom .point {
-  display: flex;
   flex-direction: column-reverse;
-  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
 }
 
-/* =========================
-   TRIANGLES
-========================= */
+/* TRIANGLES */
 .point::before {
   content: "";
-
   position: absolute;
-
   left: 50%;
   transform: translateX(-50%);
-
   width: 0;
   height: 0;
-
   border-left: 34px solid transparent;
   border-right: 34px solid transparent;
-
   z-index: 1;
 }
 
-/* TOP ROW TRIANGLES
-   POINT DOWN */
-.top .point::before {
-  top: 0;
+.top .point::before { top: 0; border-top: 300px solid; }
+.bottom .point::before { bottom: 0; border-bottom: 300px solid; }
 
-  border-top: 300px solid;
+.top .dark::before { border-top-color: #7b1e1e; }
+.top .light::before { border-top-color: #f3dfb7; }
+.bottom .dark::before { border-bottom-color: #7b1e1e; }
+.bottom .light::before { border-bottom-color: #f3dfb7; }
+
+/* HIGHLIGHTS */
+.point.valid-move::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 2;
 }
 
-/* BOTTOM ROW TRIANGLES
-   POINT UP */
-.bottom .point::before {
+.top .point.valid-move::after {
   bottom: 0;
-
-  border-bottom: 300px solid;
+  border-left: 38px solid transparent;
+  border-right: 38px solid transparent;
+  border-top: 300px solid rgba(255, 230, 0, 0.65);
 }
 
-/* =========================
-   TRIANGLE COLORS
-========================= */
-
-/* TOP */
-.top .dark::before {
-  border-top-color: #7b1e1e;
-}
-
-.top .light::before {
-  border-top-color: #f3dfb7;
-}
-
-/* BOTTOM */
-.bottom .dark::before {
-  border-bottom-color: #7b1e1e;
-}
-
-.bottom .light::before {
-  border-bottom-color: #f3dfb7;
+.bottom .point.valid-move::after {
+  top: 0;
+  border-left: 38px solid transparent;
+  border-right: 38px solid transparent;
+  border-bottom: 300px solid rgba(255, 230, 0, 0.65);
 }
 
 /* =========================
@@ -212,46 +205,26 @@ button:hover {
 .checker {
   width: 52px;
   height: 52px;
-
   border-radius: 50%;
-
   margin: 2px 0;
-
   flex-shrink: 0;
-
   position: relative;
   z-index: 5;
-
   pointer-events: none;
-
-  box-shadow:
-    0 4px 10px rgba(0,0,0,0.45),
-    inset 0 2px 3px rgba(255,255,255,0.25);
-
-  transition:
-    transform 0.15s,
-    box-shadow 0.15s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.45), inset 0 2px 3px rgba(255,255,255,0.25);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.checker:hover {
-  transform: scale(1.05);
+.bar .checker {
+  width: 46px; /* Slightly smaller to fit nicely in the bar */
+  height: 46px;
+  margin: -10px 0; /* Creates the overlapping stacked look */
 }
 
-/* WHITE */
-.checker.white {
-  background: #f2f2f2;
-  border: 2px solid #bdbdbd;
-}
+.checker.white { background: #f2f2f2; border: 2px solid #bdbdbd; }
+.checker.black { background: #1f1f1f; border: 2px solid #000; }
 
-/* BLACK */
-.checker.black {
-  background: #1f1f1f;
-  border: 2px solid #000;
-}
-
-/* =========================
-   SELECTED
-========================= */
+/* SELECTED STATE */
 .checker.selected {
   outline: 4px solid #ffe066;
   transform: scale(1.08);
