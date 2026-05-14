@@ -1,4 +1,3 @@
-
 /* =========================
    RESET
 ========================= */
@@ -12,18 +11,23 @@
    PAGE
 ========================= */
 body {
-  height: 100vh;
+  min-height: 100vh;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  background: #151515;
+  background: radial-gradient(
+  circle at top center,
+  rgb(41, 255, 41),
+  rgb(255, 0, 0)
+);
+
   font-family: Arial, sans-serif;
 }
 
 /* =========================
-   GAME WRAPPER
+   GAME UI
 ========================= */
 .game-ui {
   display: flex;
@@ -40,7 +44,8 @@ body {
   align-items: center;
 
   padding: 14px 18px;
-  background: #2a2a2a;
+
+  background: #2d0047;
   border-radius: 10px;
 
   color: white;
@@ -57,9 +62,11 @@ button {
   border-radius: 8px;
 
   background: #d18a2f;
-  font-weight: bold;
 
+  font-weight: bold;
   cursor: pointer;
+
+  transition: 0.2s;
 }
 
 button:hover {
@@ -70,8 +77,8 @@ button:hover {
    BOARD
 ========================= */
 .board {
-  width: 1100px;
-  height: 650px;
+  width: min(1100px, 95vw);
+  aspect-ratio: 11 / 6.5;
 
   display: flex;
   gap: 16px;
@@ -79,8 +86,9 @@ button:hover {
   padding: 16px;
 
   background: #c79a62;
+
   border: 14px solid #5a3418;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 /* =========================
@@ -88,13 +96,17 @@ button:hover {
 ========================= */
 .section {
   flex: 1;
+
   display: flex;
   flex-direction: column;
 }
 
-/* ROWS */
+/* =========================
+   ROWS
+========================= */
 .row {
   flex: 1;
+
   display: flex;
 }
 
@@ -103,67 +115,99 @@ button:hover {
 ========================= */
 .bar {
   width: 70px;
+
   background: #3e2411;
+
+  border-radius: 6px;
 }
 
 /* =========================
-   POINTS (JS CONTAINER)
+   POINTS
 ========================= */
 .point {
   flex: 1;
-  position: relative;
 
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
+  cursor: pointer;
+
+  position: relative;
 
   overflow: hidden;
 }
 
+/* TOP ROW -> STACK DOWNWARD */
+.top .point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* BOTTOM ROW -> STACK UPWARD */
+.bottom .point {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
 /* =========================
-   TRIANGLE BASE
+   TRIANGLES
 ========================= */
 .point::before {
   content: "";
+
   position: absolute;
+
   left: 50%;
   transform: translateX(-50%);
 
   width: 0;
   height: 0;
 
-  border-left: 38px solid transparent;
-  border-right: 38px solid transparent;
+  border-left: 34px solid transparent;
+  border-right: 34px solid transparent;
+
+  z-index: 1;
 }
 
-/* =========================
-   TOP ROW (POINTS DOWN)
-   TIP IS LOWER THAN BASE
-========================= */
-.bottom .point::before {
+/* TOP ROW TRIANGLES
+   POINT DOWN */
+.top .point::before {
   top: 0;
+
+  border-top: 300px solid;
+}
+
+/* BOTTOM ROW TRIANGLES
+   POINT UP */
+.bottom .point::before {
+  bottom: 0;
+
   border-bottom: 300px solid;
 }
 
 /* =========================
-   BOTTOM ROW (POINTS UP)
-   TIP IS HIGHER THAN BASE
+   TRIANGLE COLORS
 ========================= */
-.top .point::before {
-  bottom: 0;
-  border-top: 300px solid;
+
+/* TOP */
+.top .dark::before {
+  border-top-color: #7b1e1e;
 }
 
-/* TOP ROW (USES border-bottom triangles) */
-.top .dark::before { border-bottom-color: #7b1e1e; }
-.top .light::before { border-bottom-color: #f3dfb7; }
+.top .light::before {
+  border-top-color: #f3dfb7;
+}
 
-/* BOTTOM ROW (USES border-top triangles) */
-.bottom .dark::before { border-top-color: #7b1e1e; }
-.bottom .light::before { border-top-color: #f3dfb7; }
+/* BOTTOM */
+.bottom .dark::before {
+  border-bottom-color: #7b1e1e;
+}
+
+.bottom .light::before {
+  border-bottom-color: #f3dfb7;
+}
 
 /* =========================
-   CHECKERS (JS CONTROLLED)
+   CHECKERS
 ========================= */
 .checker {
   width: 52px;
@@ -175,20 +219,40 @@ button:hover {
 
   flex-shrink: 0;
 
-  cursor: pointer;
+  position: relative;
+  z-index: 5;
+
+  pointer-events: none;
 
   box-shadow:
-    0 4px 10px rgba(0,0,0,0.4),
-    inset 0 2px 3px rgba(255,255,255,0.3);
+    0 4px 10px rgba(0,0,0,0.45),
+    inset 0 2px 3px rgba(255,255,255,0.25);
+
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
 }
 
-/* COLORS */
+.checker:hover {
+  transform: scale(1.05);
+}
+
+/* WHITE */
 .checker.white {
   background: #f2f2f2;
-  border: 2px solid #bbb;
+  border: 2px solid #bdbdbd;
 }
 
+/* BLACK */
 .checker.black {
-  background: #222;
+  background: #1f1f1f;
   border: 2px solid #000;
+}
+
+/* =========================
+   SELECTED
+========================= */
+.checker.selected {
+  outline: 4px solid #ffe066;
+  transform: scale(1.08);
 }

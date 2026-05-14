@@ -42,7 +42,38 @@
       }
     }
     turn+=2;
+    renderBoard();
+    updateTurn();
   }
+
+  function renderBoard() {
+
+  for (let i = 0; i < 24; i++) {
+
+    const pointDiv = document.getElementById("point" + i);
+
+    pointDiv.innerHTML = "";
+
+    const point = board.points[i];
+
+    for (let j = 0; j < point.getChekerAmount(); j++) {
+
+      const checker = document.createElement("div");
+
+      checker.classList.add("checker");
+
+      if (point.getChekerColor() == "white") {
+        checker.classList.add("white");
+      }
+
+      if (point.getChekerColor() == "black") {
+        checker.classList.add("black");
+      }
+
+      pointDiv.appendChild(checker);
+    }
+  }
+}
 
   function random(min, max) {
     min = Math.ceil(min);
