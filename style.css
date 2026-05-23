@@ -98,6 +98,7 @@ button:active {
   align-items: center;
   min-height: 0;
   cursor: pointer;
+  overflow-y: clip;
 }
 
 .top .point {
