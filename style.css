@@ -28,6 +28,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  width: min(1100px, 95vw);
 }
 
 .top-panel {
@@ -40,6 +41,7 @@ body {
   color: white;
   font-weight: bold;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  width: 100%;
 }
 
 button {
@@ -65,7 +67,7 @@ button:active {
    BOARD STRUCTURE
 ========================= */
 .board {
-  width: min(1100px, 95vw);
+  width: 100%;
   aspect-ratio: 11 / 6.5;
   display: flex;
   gap: 16px;
@@ -176,7 +178,6 @@ button:active {
   background: #4a2c15;
 }
 
-/* Pulse for forced moves */
 .bar.active-turn {
   box-shadow: inset 0 0 20px #ffe066, 0 0 15px rgba(255, 224, 102, 0.6);
   border-color: #ffe066;
@@ -210,11 +211,10 @@ button:active {
   box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.2);
 }
 
-/* Specialized stacking in the Bar */
 .bar .checker {
   width: 44px;
   height: 44px;
-  margin: -15px 0; /* Overlap effect */
+  margin: -15px 0;
   border-width: 3px;
 }
 
@@ -228,11 +228,76 @@ button:active {
   border: 2px solid #000;
 }
 
-/* Selected Highlight */
 .checker.selected {
   outline: 4px solid #ffe066;
   outline-offset: 3px;
   transform: scale(1.1);
   z-index: 10;
   box-shadow: 0 0 20px #ffe066;
+}
+
+/* ==========================================
+   POPUP MODAL OVERLAY STYLES
+========================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2d0047;
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: min(380px, 90vw);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  border: 2px solid #5a3418;
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 12px; right: 18px;
+  font-size: 26px;
+  cursor: pointer;
+  opacity: 0.6;
+}
+.close-modal:hover { opacity: 1; }
+
+.modal-content h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #ffe066;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.2);
+  color: white;
+  font-size: 14px;
+}
+.modal-content input:focus {
+  outline: 1px solid #ffe066;
+}
+
+.text-center {
+  text-align: center;
+}
+
+#reset-modal button {
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+#reset-modal button:hover {
+  filter: brightness(1.1);
 }

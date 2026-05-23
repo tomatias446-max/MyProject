@@ -6,87 +6,106 @@
   <title>Backgammon</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
   <div class="game-ui">
-    <!-- TOP UI -->
     <div class="top-panel">
-
-      <div id="turnDisplay" class="turn-display">
-        Turn: White
+      <div id="auth-status-bar" style="display: flex; align-items: center; gap: 12px;">
+        <span id="user-display">Connecting as Guest...</span>
+        <button id="auth-action-btn" onclick="openAuthModal()">Save Progress / Login</button>
       </div>
 
-      <div id="dice" class="dice-display">
-        Dice: -,-
+      <div id="turnDisplay" class="turn-display">Turn: White</div>
+      <div id="dice" class="dice-display">Dice: -,-</div>
+      
+      <div style="display: flex; gap: 8px;">
+        <button onclick="roll()">Roll Dice</button>
+        <button onclick="resetBoard()" style="background-color: #d9534f; color: white; border: none;">Reset Game</button>
       </div>
-
-      <button onclick="roll()">
-        Roll Dice
-      </button>
-
     </div>
-
-    <!-- BOARD -->
 
     <div class="board">
-
       <div class="section">
+        <div class="row top">
+          <div class="point dark" id="12"></div>
+          <div class="point light" id="13"></div>
+          <div class="point dark" id="14"></div>
+          <div class="point light" id="15"></div>
+          <div class="point dark" id="16"></div>
+          <div class="point light" id="17"></div>
+        </div>
+        <div class="row bottom">
+          <div class="point light" id="11"></div>
+          <div class="point dark" id="10"></div>
+          <div class="point light" id="9"></div>
+          <div class="point dark" id="8"></div>
+          <div class="point light" id="7"></div>
+          <div class="point dark" id="6"></div>
+        </div>
+      </div>
 
-  <!-- TOP -->
-  <div class="row top">
-    <div class="point dark" id="12"></div>
-    <div class="point light" id="13"></div>
-    <div class="point dark" id="14"></div>
-    <div class="point light" id="15"></div>
-    <div class="point dark" id="16"></div>
-    <div class="point light" id="17"></div>
-  </div>
-
-  <!-- BOTTOM -->
-  <div class="row bottom">
-    <div class="point light" id="11"></div>
-    <div class="point dark" id="10"></div>
-    <div class="point light" id="9"></div>
-    <div class="point dark" id="8"></div>
-    <div class="point light" id="7"></div>
-    <div class="point dark" id="6"></div>
-  </div>
-
-</div>
-
-      <!-- BAR -->
       <div class="bar"></div>
 
-      <!-- RIGHT 12 -->
-     <div class="section">
-
-  <!-- TOP -->
-  <div class="row top">
-    <div class="point dark" id="18"></div>
-    <div class="point light" id="19"></div>
-    <div class="point dark" id="20"></div>
-    <div class="point light" id="21"></div>
-    <div class="point dark" id="22"></div>
-    <div class="point light" id="23"></div>
-  </div>
-
-  <!-- BOTTOM -->
-  <div class="row bottom">
-    <div class="point light" id="5"></div>
-    <div class="point dark" id="4"></div>
-    <div class="point light" id="3"></div>
-    <div class="point dark" id="2"></div>
-    <div class="point light" id="1"></div>
-    <div class="point dark" id="0"></div>
-  </div>
-
-</div>
-
+      <div class="section">
+        <div class="row top">
+          <div class="point dark" id="18"></div>
+          <div class="point light" id="19"></div>
+          <div class="point dark" id="20"></div>
+          <div class="point light" id="21"></div>
+          <div class="point dark" id="22"></div>
+          <div class="point light" id="23"></div>
+        </div>
+        <div class="row bottom">
+          <div class="point light" id="5"></div>
+          <div class="point dark" id="4"></div>
+          <div class="point light" id="3"></div>
+          <div class="point dark" id="2"></div>
+          <div class="point light" id="1"></div>
+          <div class="point dark" id="0"></div>
+        </div>
+      </div>
     </div>
-
   </div>
 
-  <script src="script.js"></script>
+  <div id="auth-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeAuthModal()">&times;</span>
+      <h2>Account Options</h2>
+      <p style="margin-bottom: 20px; font-size: 14px; opacity: 0.8;">Link your temporary guest game to an account to save progress permanently across devices.</p>
+      
+      <div class="modal-auth-methods">
+        <button onclick="loginGoogle()" style="background:#4285F4; width:100%; margin-bottom:12px;">Link Google Account</button>
+        
+        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.15); margin:16px 0;">
 
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <input type="email" id="auth-email" placeholder="Email Address">
+          <input type="password" id="auth-password" placeholder="Password">
+          <div style="display: flex; gap: 8px;">
+            <button onclick="loginEmail()" style="flex:1;">Sign In</button>
+            <button onclick="registerEmail()" style="flex:1; background:#4a157d;">Create Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="reset-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content text-center">
+      <h2>Reset Match?</h2>
+      <p style="margin-bottom: 24px; font-size: 14px; opacity: 0.8; line-height: 1.4;">
+        Are you sure you want to reset the board? All current game progress and active dice vectors will be permanently cleared.
+      </p>
+      <div style="display: flex; gap: 12px;">
+        <button onclick="closeResetModal()" style="flex: 1; background: #6c757d;">Cancel</button>
+        <button onclick="confirmResetBoard()" style="flex: 1; background: #d9534f;">Yes, Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
