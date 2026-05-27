@@ -95,6 +95,9 @@ function start() {
             console.error("Redirect resolution handled:", err);
             alert("Google Login Error: " + err.message);
         });
+
+    // Handle screen resize calculation recalculation dynamically
+    window.addEventListener("resize", renderAll);
 }
 
 window.openAuthModal = openAuthModal;
@@ -554,19 +557,48 @@ function roll() {
 
 function renderAll() {
     const color = board.getCurrentColor();
+    
     for (let i = 0; i < 24; i++) {
         const el = document.getElementById(String(i));
         if (!el) continue;
         el.innerHTML = "";
+        
         const p = board.points[i];
-        for (let j = 0; j < p.getCheckerAmount(); j++) {
+        const count = p.getCheckerAmount();
+        if (count === 0) continue;
+
+        const isTopRow = (i >= 12);
+
+        // Track point height geometry metrics dynamically
+        const pointHeight = el.clientHeight || 240; 
+        // 52px is our optimal width/height setup for un-squished checkers
+        const checkerDiameter = Math.min(52, window.innerWidth * 0.05); 
+        
+        // Compute standard incremental layout separation spacing
+        let stepSpacing = checkerDiameter + 3; // base spacing including padding
+        const totalNeededHeight = count * stepSpacing;
+
+        // If checkers exceed standard point height boundaries, compression scales progressively
+        if (totalNeededHeight > pointHeight) {
+            const availableSpace = pointHeight - checkerDiameter - 10;
+            stepSpacing = availableSpace / (count - 1);
+        }
+
+        for (let j = 0; j < count; j++) {
             const d = document.createElement("div");
             d.classList.add("checker", p.getCheckerColor());
             
-            if (selected === i && j === p.getCheckerAmount() - 1) {
+            // Assign positional coordinate offsets mathematically 
+            const calculatedOffset = j * stepSpacing;
+            if (isTopRow) {
+                d.style.top = `${calculatedOffset}px`;
+            } else {
+                d.style.bottom = `${calculatedOffset}px`;
+            }
+
+            if (selected === i && j === count - 1) {
                 d.classList.add("selected");
                 
-                // Switch select tone to green if a safe terminal bear-off action exists on this point
                 if (canBearOff(color)) {
                     const legalMoves = board.getLegalMoves(i, dice);
                     if (legalMoves.includes(-1) || legalMoves.includes(24)) {
