@@ -97,7 +97,6 @@ function start() {
         });
 }
 
-// Global scope attachment for inline HTML element binding
 window.openAuthModal = openAuthModal;
 window.closeAuthModal = closeAuthModal;
 window.loginGoogle = loginGoogle;
@@ -171,15 +170,11 @@ function openAuthModal() {
     }
 }
 
-// Duplicate cleanup block omitted safely here
 function closeAuthModal() {
     const modal = document.getElementById("auth-modal");
     if (modal) modal.style.display = "none";
 }
 
-// ==========================================
-// AUTHENTICATION PROVIDERS CORE ACTIONS
-// ==========================================
 function loginGoogle() {
     if (currentUser && currentUser.isAnonymous) {
         linkWithPopup(currentUser, googleProvider)
@@ -235,9 +230,6 @@ function registerEmail() {
     }
 }
 
-// ==========================================
-// DATA LIFECYCLE ARCHITECTURE
-// ==========================================
 function attachMatchListener(userId) {
     if (matchListener) matchListener();
 
@@ -316,9 +308,6 @@ function loadLocalMatch() {
     renderAll();
 }
 
-// ==========================================
-// INTERACTION CONTROLLERS
-// ==========================================
 function handleBarClick() {
     const color = board.getCurrentColor();
     if (bar[color] > 0) {
@@ -573,7 +562,18 @@ function renderAll() {
         for (let j = 0; j < p.getCheckerAmount(); j++) {
             const d = document.createElement("div");
             d.classList.add("checker", p.getCheckerColor());
-            if (selected === i && j === p.getCheckerAmount() - 1) d.classList.add("selected");
+            
+            if (selected === i && j === p.getCheckerAmount() - 1) {
+                d.classList.add("selected");
+                
+                // Switch select tone to green if a safe terminal bear-off action exists on this point
+                if (canBearOff(color)) {
+                    const legalMoves = board.getLegalMoves(i, dice);
+                    if (legalMoves.includes(-1) || legalMoves.includes(24)) {
+                        d.classList.add("can-bear-off-glow");
+                    }
+                }
+            }
             el.appendChild(d);
         }
     }
@@ -604,6 +604,19 @@ function renderAll() {
     if (turnDisplayEl) {
         turnDisplayEl.innerText = "Turn: " + color.charAt(0).toUpperCase() + color.slice(1);
     }
+
+    // Render Bear-Off Trays
+    ['white', 'black'].forEach(c => {
+        const trayEl = document.getElementById(`bear-off-${c}`);
+        if (trayEl) {
+            trayEl.innerHTML = "";
+            for (let i = 0; i < borneOff[c]; i++) {
+                const piece = document.createElement("div");
+                piece.classList.add("checker", c, "borne-off-piece");
+                trayEl.appendChild(piece);
+            }
+        }
+    });
 }
 
 class Point {
