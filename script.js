@@ -1,6 +1,17 @@
 // ==========================================
-// FIREBASE APP INIT
+// FIREBASE APP INIT (ES MODULE STANDARD)
 // ==========================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { 
+    getFirestore, doc, onSnapshot, setDoc 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { 
+    getAuth, onAuthStateChanged, getRedirectResult, signInAnonymously, 
+    signOut, signInWithPopup, linkWithPopup, signInWithRedirect,
+    signInWithEmailAndPassword, createUserWithEmailAndPassword,
+    linkWithCredential, EmailAuthProvider, GoogleAuthProvider
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
 const firebaseConfig = {
     apiKey: "AIzaSyBU4dyGo7bd6YKtHwDY9TYalQymYYeydNw",
     authDomain: "backgammon446.firebaseapp.com",
@@ -11,11 +22,11 @@ const firebaseConfig = {
     measurementId: "G-ZRV59E48WM"
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-const googleProvider = new firebase.auth.GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('profile');
 googleProvider.addScope('email');
 
@@ -30,7 +41,6 @@ let borneOff = { white: 0, black: 0 };
 let currentUser = null;       
 let matchListener = null;     
 
-// SECURE ISOLATION: Generates a persistent unique key for guest data separation
 function getLocalMatchKey() {
     let guestId = localStorage.getItem("backgammon_guest_token");
     if (!guestId) {
@@ -43,7 +53,6 @@ function getLocalMatchKey() {
 function start() {
     board = new Board();
 
-    // Attach click events to DOM elements
     for (let i = 0; i < 24; i++) {
         const pEl = document.getElementById(String(i));
         if(pEl) pEl.onclick = () => handleClick(i);
@@ -52,8 +61,7 @@ function start() {
     const barEl = document.querySelector(".bar");
     if(barEl) barEl.onclick = () => handleBarClick();
 
-    // Firebase state listener manages execution flow during lifecycle changes
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
         const actionBtn = document.getElementById("auth-action-btn");
         const userDisplay = document.getElementById("user-display");
         
@@ -77,7 +85,7 @@ function start() {
         }
     });
 
-    auth.getRedirectResult()
+    getRedirectResult(auth)
         .then((result) => {
             if (result && result.user) {
                 closeAuthModal();
@@ -89,9 +97,21 @@ function start() {
         });
 }
 
+// Global scope attachment for inline HTML element binding
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+window.loginGoogle = loginGoogle;
+window.loginEmail = loginEmail;
+window.registerEmail = registerEmail;
+window.roll = roll;
+window.resetBoard = resetBoard;
+window.closeResetModal = closeResetModal;
+window.confirmResetBoard = confirmResetBoard;
+window.handleWinReset = handleWinReset;
+
 function playAsGuest() {
     if (!auth.currentUser) {
-        auth.signInAnonymously()
+        signInAnonymously(auth)
             .then(() => closeAuthModal())
             .catch(err => console.error("Guest startup failed:", err));
     } else {
@@ -132,7 +152,6 @@ function closeResetModal() {
     if (rm) rm.style.display = "none";
 }
 
-// FIX: Completely clear the reference key first, restore memory models, and save right away
 function confirmResetBoard() {
     if (!currentUser) {
         localStorage.removeItem(getLocalMatchKey());
@@ -143,18 +162,16 @@ function confirmResetBoard() {
     closeResetModal();
 }
 
-// ==========================================
-// POPUP WINDOW CONTROL HANDLERS
-// ==========================================
 function openAuthModal() {
     if(currentUser) {
-        auth.signOut().then(() => { currentUser = null; });
+        signOut(auth).then(() => { currentUser = null; });
     } else {
         const modal = document.getElementById("auth-modal");
         if (modal) modal.style.display = "flex";
     }
 }
 
+// Duplicate cleanup block omitted safely here
 function closeAuthModal() {
     const modal = document.getElementById("auth-modal");
     if (modal) modal.style.display = "none";
@@ -165,25 +182,25 @@ function closeAuthModal() {
 // ==========================================
 function loginGoogle() {
     if (currentUser && currentUser.isAnonymous) {
-        currentUser.linkWithPopup(googleProvider)
+        linkWithPopup(currentUser, googleProvider)
             .then(() => closeAuthModal())
             .catch(err => {
                 if (err.code === 'auth/email-already-in-use' || err.code === 'auth/credential-already-in-use') {
-                    auth.signInWithPopup(googleProvider)
+                    signInWithPopup(auth, googleProvider)
                         .then(() => closeAuthModal())
                         .catch(e => alert("Login failed: " + e.message));
                 } else if (err.code === 'auth/popup-blocked') {
-                    auth.signInWithRedirect(googleProvider).catch(e => console.error(e));
+                    signInWithRedirect(auth, googleProvider).catch(e => console.error(e));
                 } else {
                     alert("Linking failed: " + err.message);
                 }
             });
     } else {
-        auth.signInWithPopup(googleProvider)
+        signInWithPopup(auth, googleProvider)
             .then(() => closeAuthModal())
             .catch(err => {
                 if (err.code === 'auth/popup-blocked') {
-                    auth.signInWithRedirect(googleProvider).catch(e => console.error(e));
+                    signInWithRedirect(auth, googleProvider).catch(e => console.error(e));
                 } else {
                     alert("Google Login Error: " + err.message);
                 }
@@ -196,7 +213,7 @@ function loginEmail() {
     const pass = document.getElementById("auth-password")?.value;
     if(!email || !pass) return alert("Please fill in both fields.");
     
-    auth.signInWithEmailAndPassword(email, pass)
+    signInWithEmailAndPassword(auth, email, pass)
         .then(() => closeAuthModal())
         .catch(err => alert("Login Error: " + err.message));
 }
@@ -207,26 +224,27 @@ function registerEmail() {
     if(!email || !pass) return alert("Please fill in both fields.");
 
     if (currentUser && currentUser.isAnonymous) {
-        const credential = firebase.auth.EmailAuthProvider.credential(email, pass);
-        currentUser.linkWithCredential(credential)
+        const credential = EmailAuthProvider.credential(email, pass);
+        linkWithCredential(currentUser, credential)
             .then(() => closeAuthModal())
             .catch(err => alert("Link Error: " + err.message));
     } else {
-        auth.createUserWithEmailAndPassword(email, pass)
+        createUserWithEmailAndPassword(auth, email, pass)
             .then(() => closeAuthModal())
             .catch(err => alert("Registration error: " + err.message));
     }
 }
 
 // ==========================================
-// DB SYNC / LOCAL MEMORY ENGINE
+// DATA LIFECYCLE ARCHITECTURE
 // ==========================================
 function attachMatchListener(userId) {
     if (matchListener) matchListener();
 
-    matchListener = db.collection("backgammon").doc(userId).onSnapshot((doc) => {
-        if (doc.exists) {
-            const data = doc.data();
+    const docRef = doc(db, "backgammon", userId);
+    matchListener = onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+            const data = docSnap.data();
             dice = data.dice || [];
             board.turn = data.turn || 0;
             bar = data.bar || { white: 0, black: 0 };
@@ -262,7 +280,8 @@ function saveMatchData() {
     };
 
     if (currentUser) {
-        db.collection("backgammon").doc(currentUser.uid).set(payload)
+        const docRef = doc(db, "backgammon", currentUser.uid);
+        setDoc(docRef, payload)
           .catch(err => console.error("Cloud write failed: ", err));
     } else {
         localStorage.setItem(getLocalMatchKey(), JSON.stringify(payload));
@@ -270,7 +289,6 @@ function saveMatchData() {
     }
 }
 
-// FIX: If local data isn't found, build a completely fresh configuration instead of returning early
 function loadLocalMatch() {
     const localDataStr = localStorage.getItem(getLocalMatchKey());
     if (localDataStr) {
@@ -444,11 +462,15 @@ function handleCapture(to, color) {
     }
 }
 
-// TURN CONTROLLER LOGIC
 function resolveTurn() {
     const color = board.getCurrentColor();
     if (borneOff[color] === 15) {
-        alert(color.toUpperCase() + " wins!");
+        const winModal = document.getElementById("win-modal");
+        const winMessage = document.getElementById("win-message");
+        if (winModal && winMessage) {
+            winMessage.innerText = `${color} has successfully borne off all checkers!`;
+            winModal.style.display = "flex";
+        }
         return;
     }
     if (dice.length > 0 && !hasAnyLegalMove(color)) dice = [];
@@ -457,6 +479,17 @@ function resolveTurn() {
         selected = null;
     }
     saveMatchData();
+}
+
+function handleWinReset() {
+    const winModal = document.getElementById("win-modal");
+    if (winModal) winModal.style.display = "none";
+    if (!currentUser) {
+        localStorage.removeItem(getLocalMatchKey());
+    }
+    setupDefaultBoard();
+    saveMatchData(); 
+    renderAll();
 }
 
 function hasAnyLegalMove(color) {
