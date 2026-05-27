@@ -41,11 +41,12 @@ let borneOff = { white: 0, black: 0 };
 let currentUser = null;       
 let matchListener = null;     
 
+// Changed from localStorage to sessionStorage to keep guest data bound strictly to the temporary active tab session
 function getLocalMatchKey() {
-    let guestId = localStorage.getItem("backgammon_guest_token");
+    let guestId = sessionStorage.getItem("backgammon_guest_token");
     if (!guestId) {
         guestId = "guest_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-        localStorage.setItem("backgammon_guest_token", guestId);
+        sessionStorage.setItem("backgammon_guest_token", guestId);
     }
     return "backgammon_match_" + guestId;
 }
@@ -68,8 +69,8 @@ function start() {
         if (user) {
             currentUser = user;
             if (user.isAnonymous) {
-                if (userDisplay) userDisplay.innerText = "Playing as Guest (Cloud Save)";
-                if (actionBtn) actionBtn.innerText = "Save Progress / Login";
+                if (userDisplay) userDisplay.innerText = "Playing as Guest (Temporary Session)";
+                if (actionBtn) actionBtn.innerText = "Save Progress Permanent / Login";
             } else {
                 let nameStr = user.email || user.displayName || "Logged In";
                 if (userDisplay) userDisplay.innerText = `Player: ${nameStr}`;
@@ -79,7 +80,7 @@ function start() {
         } else {
             currentUser = null;
             if (matchListener) { matchListener(); matchListener = null; }
-            if (userDisplay) userDisplay.innerText = "Playing Offline / Not Logged In";
+            if (userDisplay) userDisplay.innerText = "Playing Offline / Temporary Session";
             if (actionBtn) actionBtn.innerText = "Log In / Sign Up";
             loadLocalMatch();
         }
@@ -96,7 +97,6 @@ function start() {
             alert("Google Login Error: " + err.message);
         });
 
-    // Handle screen resize calculation recalculation dynamically
     window.addEventListener("resize", renderAll);
 }
 
@@ -156,7 +156,7 @@ function closeResetModal() {
 
 function confirmResetBoard() {
     if (!currentUser) {
-        localStorage.removeItem(getLocalMatchKey());
+        sessionStorage.removeItem(getLocalMatchKey());
     }
     setupDefaultBoard();
     saveMatchData(); 
@@ -274,18 +274,20 @@ function saveMatchData() {
         pointsData: pointsData
     };
 
-    if (currentUser) {
+    if (currentUser && !currentUser.isAnonymous) {
+        // Only write to cloud database if it's a real logged-in account
         const docRef = doc(db, "backgammon", currentUser.uid);
         setDoc(docRef, payload)
           .catch(err => console.error("Cloud write failed: ", err));
     } else {
-        localStorage.setItem(getLocalMatchKey(), JSON.stringify(payload));
+        // Guest states stay sandboxed strictly within the temporary sessionStorage setup
+        sessionStorage.setItem(getLocalMatchKey(), JSON.stringify(payload));
         renderAll();
     }
 }
 
 function loadLocalMatch() {
-    const localDataStr = localStorage.getItem(getLocalMatchKey());
+    const localDataStr = sessionStorage.getItem(getLocalMatchKey());
     if (localDataStr) {
         try {
             const data = JSON.parse(localDataStr);
@@ -477,7 +479,7 @@ function handleWinReset() {
     const winModal = document.getElementById("win-modal");
     if (winModal) winModal.style.display = "none";
     if (!currentUser) {
-        localStorage.removeItem(getLocalMatchKey());
+        sessionStorage.removeItem(getLocalMatchKey());
     }
     setupDefaultBoard();
     saveMatchData(); 
@@ -529,6 +531,7 @@ function showValidMoves(fromIndex) {
     });
 }
 
+// Fixed up layout references
 function showValidMovesFromBar() {
     clearHighlights();
     getLegalMovesFromBar().forEach(m => {
@@ -568,17 +571,12 @@ function renderAll() {
         if (count === 0) continue;
 
         const isTopRow = (i >= 12);
-
-        // Track point height geometry metrics dynamically
         const pointHeight = el.clientHeight || 240; 
-        // 52px is our optimal width/height setup for un-squished checkers
         const checkerDiameter = Math.min(52, window.innerWidth * 0.05); 
         
-        // Compute standard incremental layout separation spacing
-        let stepSpacing = checkerDiameter + 3; // base spacing including padding
+        let stepSpacing = checkerDiameter + 3; 
         const totalNeededHeight = count * stepSpacing;
 
-        // If checkers exceed standard point height boundaries, compression scales progressively
         if (totalNeededHeight > pointHeight) {
             const availableSpace = pointHeight - checkerDiameter - 10;
             stepSpacing = availableSpace / (count - 1);
@@ -588,7 +586,6 @@ function renderAll() {
             const d = document.createElement("div");
             d.classList.add("checker", p.getCheckerColor());
             
-            // Assign positional coordinate offsets mathematically 
             const calculatedOffset = j * stepSpacing;
             if (isTopRow) {
                 d.style.top = `${calculatedOffset}px`;
@@ -637,7 +634,6 @@ function renderAll() {
         turnDisplayEl.innerText = "Turn: " + color.charAt(0).toUpperCase() + color.slice(1);
     }
 
-    // Render Bear-Off Trays
     ['white', 'black'].forEach(c => {
         const trayEl = document.getElementById(`bear-off-${c}`);
         if (trayEl) {
